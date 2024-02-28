@@ -71,7 +71,7 @@ const Navbar = ({content}) => {
         <List>
           {menus.map((text, index) => (
             <ListItem key={index} disablePadding>
-              <ListItemButton href={`/${text.text}`}>
+              <ListItemButton href={`/#/${text.text}`}>
                 <ListItemIcon>
                   {text.icon}
                 </ListItemIcon>
