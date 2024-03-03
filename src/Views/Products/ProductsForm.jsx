@@ -1,15 +1,95 @@
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, Button, Divider, TextField, Typography } from "@mui/material";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useNavigate } from "react-router";
+import { createProduct } from "../../Services/ProductService";
+import AlertModal from "../../Components/Modal/AlertModal";
 
 const ProductsForm = () => {
+    
+    const navigate = useNavigate();
+
+    const formik = useFormik({
+        initialValues: {
+            name: '',
+            description: '',
+            category: '',
+        },
+        validationSchema: Yup.object({
+            name: Yup.string().min(2).max(50).required('Se requiere el nombre del producto'),
+            description: Yup.string().min(2).max(50).required('Se requiere la descripcion del producto'),
+            category: Yup.string().min(2).max(50).required('Se requiere la categoria del producto'),
+        }),
+        onSubmit: (values, helpers) => {
+            createProduct(values)
+                .then((response) => {
+                    console.log(response);
+                    helpers.resetForm();
+                    helpers.setStatus({ success: true });
+                })
+                .catch((error) => {
+                    helpers.setStatus({ success: false });
+                    console.log(error);
+                    helpers.setErrors({ submit: error.response.data.message });
+                    helpers.setSubmitting(false);
+                });
+        },
+        status: { success: false }
+    });
+
+
     return (
         <Box>
             <Box sx={{ display: "flex", justifyContent: "center", alignItems: 'center', gap: 2, marginTop: 2 }}>
                 <Typography variant="h4">Agregar Producto</Typography>
             </Box>
+            <Divider sx={{ marginTop: 3 }} />
             <Box sx={{ display: "flex", justifyContent: "center", alignItems: 'center', gap: 2, marginTop: 2 }}>
-                <TextField id="name" label="Nombre" variant="outlined" />
+                <form onSubmit={formik.handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <TextField
+                        id="name"
+                        label="Nombre"
+                        variant="outlined"
+                        type="text"
+                        name="name"
+                        onChange={formik.handleChange}
+                        value={formik.values.name}
+                    />
+                    {formik.errors.name ? <div>{formik.errors.name}</div> : null}
+                    <TextField
+                        id="description"
+                        label="Descripcion"
+                        variant="outlined"
+                        type="text"
+                        name="description"
+                        onChange={formik.handleChange}
+                        value={formik.values.description}
+                    />
+                    {formik.errors.description ? <div>{formik.errors.description}</div> : null}
+                    <TextField
+                        id="category"
+                        label="Categoria"
+                        variant="outlined"
+                        type="text"
+                        name="category"
+                        onChange={formik.handleChange}
+                        value={formik.values.category}
+                    />
+                    {formik.errors.category ? <div>{formik.errors.category}</div> : null}
+                    <Button variant="contained" type="submit">Agregar</Button>
+                </form>
             </Box>
+            <AlertModal
+                open={formik.status?.success}
+                onClose={() => {
+                    formik.setStatus({ success: false })
+                    navigate('/products')
+                }}
+                modalTitle="Success"
+                modalBody="Product created successfully"
+            />
         </Box>
+
     );
 }
 
