@@ -1,12 +1,28 @@
-import { Box, Button, Divider, TextField, Typography } from "@mui/material";
+import { Box, Button, Divider, MenuItem, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router";
 import { createProduct } from "../../Services/ProductService";
 import AlertModal from "../../Components/Modal/AlertModal";
+import { useEffect, useState } from "react";
+import { getCategoriesList } from "../../Services/CategoryService";
+import Select from '@mui/joy/Select';
+import Option from '@mui/joy/Option';
 
 const ProductsForm = () => {
-    
+
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        getCategoriesList()
+            .then((response) => {
+                setCategories(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, []);
+
     const navigate = useNavigate();
 
     const formik = useFormik({
@@ -37,7 +53,12 @@ const ProductsForm = () => {
         status: { success: false }
     });
 
-
+    const handleCategoryChange = (event) => {
+        const value = event.target.innerText.trim(); 
+        const valueId = categories.find((category) => category.name === value).id;
+        formik.setFieldValue('category', valueId);
+    };
+    
     return (
         <Box>
             <Box sx={{ display: "flex", justifyContent: "center", alignItems: 'center', gap: 2, marginTop: 2 }}>
@@ -66,15 +87,21 @@ const ProductsForm = () => {
                         value={formik.values.description}
                     />
                     {formik.errors.description ? <div>{formik.errors.description}</div> : null}
-                    <TextField
-                        id="category"
-                        label="Categoria"
-                        variant="outlined"
-                        type="text"
+                    <Select
+                        placeholder="Categoria"
                         name="category"
-                        onChange={formik.handleChange}
+                        onChange={(e) => handleCategoryChange(e)}
                         value={formik.values.category}
-                    />
+                    >
+                        <Option value="" disabled>Selecciona una categoria</Option>
+                        {categories.map((category) => (
+                            <Option
+                                key={category.id}
+                                value={category.id}
+                            >{category.name}
+                            </Option >
+                        ))}
+                    </Select>
                     {formik.errors.category ? <div>{formik.errors.category}</div> : null}
                     <Button variant="contained" type="submit">Agregar</Button>
                 </form>
