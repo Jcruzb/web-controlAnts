@@ -38,7 +38,7 @@ const Products = () => {
 
     const columns = [
         { field: 'name', headerName: 'Nombre', width: 200 },
-        { field: 'description', headerName: 'Descripcion', width: 500 },
+        { field: 'description', headerName: 'Descripcion', width: 200 },
         {
             field: 'id', headerName: 'Acciones', width: 200, renderCell: (params) => {
                 console.log(params);
