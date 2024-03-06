@@ -1,9 +1,209 @@
-const ExpenseForm = () => {
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { createExpense } from "../../Services/ExpenseService";
+import { Box, Button, Divider, TextField, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { getProductsList } from "../../Services/ProductService";
+import { getCategoriesList } from "../../Services/CategoryService";
+import AlertModal from "../../Components/Modal/AlertModal";
+import { Option, Select } from "@mui/joy";
+import { useNavigate } from "react-router";
+
+
+const Expense = () => {
+    const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
+
+    const KIND = [ 'fijo', 'variable', 'extra' ];
+    
+    const navigate = useNavigate();
+    
+    useEffect(() => {
+        getProductsList()
+            .then((response) => {
+                setProducts(response);
+            }
+            )
+            .catch((error) => {
+                console.log(error);
+            }
+            );
+        getCategoriesList()
+            .then((response) => {
+                setCategories(response);
+            }
+            )
+            .catch((error) => {
+                console.log(error);
+            }
+            );
+    }, []);
+
+    const formik = useFormik({
+        initialValues: {
+            name: '',
+            amount: '',
+            kind: '',
+            date: '',
+            category: '',
+            product: '',
+
+        },
+        validationSchema: Yup.object({
+            name: Yup.string().min(2).max(50).required('Se requiere el nombre del gasto'),
+            amount: Yup.number().required('Se requiere el monto del gasto'),
+            kind: Yup.string().min(2).max(50).required('Se requiere el tipo del gasto'),
+            date: Yup.date().required('Se requiere la fecha del gasto'),
+            category: Yup.string().required('Se requiere la categoria del gasto'),
+            product: Yup.string().required('Se requiere el producto del gasto'),
+        }),
+        onSubmit: (values, helpers) => {
+            createExpense(values)
+                .then((response) => {
+                    console.log(response);
+                    helpers.resetForm();
+                    helpers.setStatus({ success: true });
+                })
+                .catch((error) => {
+                    helpers.setStatus({ success: false });
+                    console.log(error);
+                    helpers.setErrors({ submit: error.response.data.message });
+                    helpers.setSubmitting(false);
+                });
+        },
+        status: { success: false }
+    });
+
+    const handleSelectChange = (event, name) => {
+        
+        let value = null
+        let valueId = null
+
+        switch (name) {
+            case 'kind':
+                value = event.target.innerText.trim();
+                valueId = KIND.find((kind) => kind === value);
+                break;
+            case 'category':
+                value = event.target.innerText.trim();
+                valueId = categories.find((category) => category.name === value).id;
+                break;
+            case 'product':
+                value = event.target.innerText.trim();
+                valueId = products.find((product) => product.name === value).id;
+                break;
+            default:
+                break;
+        }
+        formik.setFieldValue(name, valueId);
+    };
+    
+    console.log(formik.values);
+
     return (
-        <div>
-            <h1>Expense Form</h1>
-        </div>
+        <Box>
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: 'center', gap: 2, marginTop: 2 }}>
+                <Typography variant="h4">Agregar Gasto</Typography>
+            </Box>
+            <Divider sx={{ marginTop: 3 }} />
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: 'center', gap: 2, marginTop: 2 }}>
+                <form onSubmit={formik.handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <TextField
+                        id="name"
+                        label="Nombre"
+                        variant="outlined"
+                        type="text"
+                        name="name"
+                        onChange={formik.handleChange}
+                        value={formik.values.name}
+                    />
+                    {formik.errors.name ? <div>{formik.errors.name}</div> : null}
+                    <TextField
+                        id="amount"
+                        label="Monto"
+                        variant="outlined"
+                        type="text"
+                        name="amount"
+                        onChange={formik.handleChange}
+                        value={formik.values.amount}
+                    />
+                    {formik.errors.amount ? <div>{formik.errors.amount}</div> : null}
+                    <Select
+                        id="kind"
+                        name="kind"
+                        label="Tipo"
+                        variant="outlined"
+                        type="text"
+                        onChange={(e) => handleSelectChange(e, 'kind')}
+                        value={formik.values.kind}
+                    >
+                        <Option value="" disabled>Selecciona un tipo</Option>
+                        {KIND.map((kind) => {
+                            return (
+                                <Option key={kind} value={kind}>{kind}</Option>
+                            )
+                        })}
+                    </Select>
+
+                    {formik.errors.kind ? <div>{formik.errors.kind}</div> : null}
+                    <TextField
+                        id="date"
+  
+                        variant="outlined"
+                        type="date"
+                        name="date"
+                        onChange={formik.handleChange}
+                        value={formik.values.date}
+                    />
+                    {formik.errors.date ? <div>{formik.errors.date}</div> : null}
+                    <Select
+                        id="category"
+                        name="category"
+                        label="Categoria"
+                        variant="outlined"
+                        type="text"
+                        onChange={(e) => handleSelectChange(e, 'category')}
+                        value={formik.values.category}
+                    >
+                        <Option value="" disabled>Selecciona una categoria</Option>
+                        {categories.map((category) => {
+                            return (
+                                <Option key={category.id} value={category.id}>{category.name}</Option>
+                            )
+                        })}
+                    </Select>
+                    {formik.errors.category ? <div>{formik.errors.category}</div> : null}
+                    <Select
+                        id="product"
+                        name="product"
+                        label="Producto"
+                        variant="outlined"
+                        type="text"
+                        onChange={(e) => handleSelectChange(e, 'product')}
+                        value={formik.values.product}
+                    >
+                        <Option value="" disabled>Selecciona un producto</Option>
+                        {products.map((product) => {
+                            return (
+                                <Option key={product.id} value={product.id}>{product.name}</Option>
+                            )
+                        })}
+                    </Select>
+                    {formik.errors.product ? <div>{formik.errors.product}</div> : null}
+                    <Button onClick={formik.handleSubmit} variant="contained" type="submit">Agregar</Button>
+                </form>
+            </Box>
+            <AlertModal
+                open={formik.status?.success}
+                onClose={() => {
+                    formik.setStatus({ success: false })
+                    navigate('/expenses')
+                }}
+                modalTitle="Success"
+                modalBody="Expense created successfully"
+            />
+        </Box>
     );
 }
 
-export default ExpenseForm;
+export default Expense;

@@ -32,9 +32,7 @@ const Products = () => {
                 console.log(error);
             });
     }
-    
 
-    console.log(products);
 
     const columns = [
         { field: 'name', headerName: 'Nombre', width: 200 },
