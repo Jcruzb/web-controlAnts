@@ -1,4 +1,5 @@
 import ReactDOM from 'react-dom/client'
+import { StrictMode } from "react";
 import App from './App.jsx'
 import './index.css'
 import { HashRouter } from 'react-router-dom'
@@ -8,13 +9,17 @@ import { AuthContextProvider } from './Contexts/AuthContext.jsx'
 
 const theme = createTheme();
 
+
+
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <ThemeProvider theme={theme}>
-    <CssBaseline />
-  <HashRouter>
-    <AuthContextProvider>
-    <App />
-    </AuthContextProvider>
-  </HashRouter>
-  </ThemeProvider>
+  <StrictMode>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AuthContextProvider>
+        <HashRouter>
+          <App />
+        </HashRouter>
+      </AuthContextProvider>
+    </ThemeProvider>
+  </StrictMode>
 )
