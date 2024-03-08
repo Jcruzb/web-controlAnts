@@ -5,9 +5,9 @@ import {
   Divider,
   Drawer,
   Link,
-  Stack,
-  useMediaQuery
+  Stack
 } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 
 import { items } from './Config';
