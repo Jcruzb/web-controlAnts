@@ -6,13 +6,6 @@ import { TotalBar } from "../TotalBar/TotalBar";
 
 const ProtectedRoute = () => {
   const { user } = useAuthContext();
-  const Page = () => {
-    return (
-      <>
-        <Outlet />
-      </>
-    );
-  }
 
   if (!user) {
     return <Navigate to="/login" />
@@ -20,7 +13,7 @@ const ProtectedRoute = () => {
 
   return (
     <TotalBar>
-      {Page()}
+      <Outlet />
     </TotalBar>
   );
 }
