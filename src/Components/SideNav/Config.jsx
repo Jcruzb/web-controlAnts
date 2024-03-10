@@ -1,76 +1,62 @@
-import ShoppingBagIcon from "@heroicons/react/24/solid/ShoppingBagIcon";
-import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing';
-import UsersIcon from "@heroicons/react/24/solid/UsersIcon";
-import WarehouseIcon from "@mui/icons-material/Warehouse";
-import FactoryIcon from "@mui/icons-material/Factory";
-import AddBusinessIcon from "@mui/icons-material/AddBusiness";
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import HomeIcon from '@mui/icons-material/Home';
+import TypeSpecimenIcon from '@mui/icons-material/TypeSpecimen';
+import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
+import TimelineIcon from '@mui/icons-material/Timeline';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 
 import { SvgIcon } from "@mui/material";
 
+
+
 export const items = [
   {
-    title: "Ventas",
-    href: "/budget",
+    title: "Inicio",
+    href: "/#/home",
     icon: (
       <SvgIcon fontSize="small">
-        <ShoppingBagIcon />
+        <HomeIcon />
       </SvgIcon>
     ),
-  },
-  {
-    title: "Producción",
-    href: "/ot",
-    icon: (
-      <SvgIcon fontSize="small">
-        <PrecisionManufacturingIcon />
-      </SvgIcon>
-    ),
-  },
-  {
-    title: "Materiales",
-    href: "/materials",
-    icon: (
-      <SvgIcon fontSize="small">
-        <WarehouseIcon />
-      </SvgIcon>
-    ),
-  },
+  }
+  ,
   {
     title: "Productos",
-    href: "/products",
+    href: "/#/products",
     icon: (
       <SvgIcon fontSize="small">
-        <FactoryIcon />
+        <ShoppingCartIcon />
       </SvgIcon>
     ),
-  },
+  }
+  ,
   {
-    title: "Gestión de Personal",
-    href: "/users",
+    title: "Categorías",
+    href: "/#/categorys",
     icon: (
       <SvgIcon fontSize="small">
-        <UsersIcon />
+        <TypeSpecimenIcon />
       </SvgIcon>
     ),
-  },
+  }
+  ,
   {
-    title: "Proveedores",
-    href: "/suppliers",
+    title: "Gastos",
+    href: "/#/expenses",
     icon: (
       <SvgIcon fontSize="small">
-        <AddBusinessIcon />
+        <EuroSymbolIcon />
       </SvgIcon>
     ),
-  },
+  }
+  ,
   {
-    title: "Pedidos",
-    href: "/purchases",
+    title: "Historial",
+    href: "/#/history",
     icon: (
       <SvgIcon fontSize="small">
-        <LocalShippingIcon />
+        <TimelineIcon />
       </SvgIcon>
     ),
-  },
+  }
 ];

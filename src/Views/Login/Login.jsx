@@ -32,7 +32,7 @@ const Login = () => {
         onSubmit: (values, helpers) => {
             loginRequest(values)
                 .then((res) => {
-                    login(res.accessToken, () => navigate('/'))
+                    login(res.accessToken, () => navigate('/home'))
                 })
                 .catch((err) => {
                     helpers.setStatus({ success: false });
@@ -51,7 +51,7 @@ const Login = () => {
     );
     return (
         user ? (
-            <Navigate to="/" />
+            <Navigate to="/home"/>
         ) : (
             <>
                 <Box

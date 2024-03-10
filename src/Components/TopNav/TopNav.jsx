@@ -158,7 +158,7 @@ const SimpleListMenu = ({ avatar, method }) => {
         }}
       >
         <MenuItem onClick={() => method()}>
-          <Link href="/login" sx={{ color: "black", textDecoration:"none" }} >
+          <Link href="/" sx={{ color: "black", textDecoration:"none" }} >
             Logout
           </Link>
         </MenuItem>
