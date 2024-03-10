@@ -58,5 +58,14 @@ export const items = [
         <TimelineIcon />
       </SvgIcon>
     ),
+  },
+  {
+    title: "Deudas",
+    href: "/#/debts",
+    icon: (
+      <SvgIcon fontSize="small">
+        <TimelineIcon />
+      </SvgIcon>
+    ),
   }
 ];
