@@ -11,7 +11,7 @@ import {
   SvgIcon,
   Tooltip,
 } from "@mui/material";
-import { useAuthContext } from "../../contexts/AuthContext";
+import { useAuthContext } from "../../Contexts/AuthContext";
 import { useState } from "react";
 
 import List from '@mui/material/List';

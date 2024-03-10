@@ -10,10 +10,12 @@ import { AuthContextProvider } from './Contexts/AuthContext.jsx'
 const theme = createTheme();
 
 
-
 ReactDOM.createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
+    <ThemeProvider 
+      theme={theme}
+
+    >
       <CssBaseline />
       <AuthContextProvider>
         <HashRouter>

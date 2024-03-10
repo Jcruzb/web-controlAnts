@@ -6,8 +6,9 @@ import { useEffect, useState } from "react";
 import { getProductsList } from "../../Services/ProductService";
 import { getCategoriesList } from "../../Services/CategoryService";
 import AlertModal from "../../Components/Modal/AlertModal";
-import { Option, Select } from "@mui/joy";
+import Select from '@mui/material/Select';
 import { useNavigate } from "react-router";
+import MenuItem from '@mui/material/MenuItem';
 
 
 const Expense = () => {
@@ -75,27 +76,8 @@ const Expense = () => {
     });
 
     const handleSelectChange = (event, name) => {
-        
-        let value = null
-        let valueId = null
-
-        switch (name) {
-            case 'kind':
-                value = event.target.innerText.trim();
-                valueId = KIND.find((kind) => kind === value);
-                break;
-            case 'category':
-                value = event.target.innerText.trim();
-                valueId = categories.find((category) => category.name === value).id;
-                break;
-            case 'product':
-                value = event.target.innerText.trim();
-                valueId = products.find((product) => product.name === value).id;
-                break;
-            default:
-                break;
-        }
-        formik.setFieldValue(name, valueId);
+        const value = event.target.value
+        formik.setFieldValue(name, value);
     };
     
     console.log(formik.values);
@@ -137,10 +119,10 @@ const Expense = () => {
                         onChange={(e) => handleSelectChange(e, 'kind')}
                         value={formik.values.kind}
                     >
-                        <Option value="" disabled>Selecciona un tipo</Option>
+                        <MenuItem value="" disabled>Selecciona un tipo</MenuItem>
                         {KIND.map((kind) => {
                             return (
-                                <Option key={kind} value={kind}>{kind}</Option>
+                                <MenuItem key={kind} value={kind}>{kind}</MenuItem>
                             )
                         })}
                     </Select>
@@ -165,10 +147,10 @@ const Expense = () => {
                         onChange={(e) => handleSelectChange(e, 'category')}
                         value={formik.values.category}
                     >
-                        <Option value="" disabled>Selecciona una categoria</Option>
+                        <MenuItem value="" disabled>Selecciona una categoria</MenuItem>
                         {categories.map((category) => {
                             return (
-                                <Option key={category.id} value={category.id}>{category.name}</Option>
+                                <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>
                             )
                         })}
                     </Select>
@@ -182,10 +164,10 @@ const Expense = () => {
                         onChange={(e) => handleSelectChange(e, 'product')}
                         value={formik.values.product}
                     >
-                        <Option value="" disabled>Selecciona un producto</Option>
+                        <MenuItem value="" disabled>Selecciona un producto</MenuItem>
                         {products.map((product) => {
                             return (
-                                <Option key={product.id} value={product.id}>{product.name}</Option>
+                                <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>
                             )
                         })}
                     </Select>

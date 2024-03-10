@@ -6,8 +6,10 @@ import { createProduct } from "../../Services/ProductService";
 import AlertModal from "../../Components/Modal/AlertModal";
 import { useEffect, useState } from "react";
 import { getCategoriesList } from "../../Services/CategoryService";
-import Select from '@mui/joy/Select';
-import Option from '@mui/joy/Option';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+
+
 
 const ProductsForm = () => {
 
@@ -54,10 +56,11 @@ const ProductsForm = () => {
     });
 
     const handleCategoryChange = (event) => {
-        const value = event.target.innerText.trim(); 
-        const valueId = categories.find((category) => category.name === value).id;
-        formik.setFieldValue('category', valueId);
+        const value = event.target.value
+        formik.setFieldValue('category', value);
     };
+
+    console.log(formik.values);
     
     return (
         <Box>
@@ -93,13 +96,13 @@ const ProductsForm = () => {
                         onChange={(e) => handleCategoryChange(e)}
                         value={formik.values.category}
                     >
-                        <Option value="" disabled>Selecciona una categoria</Option>
+                        <MenuItem  value="" disabled>Selecciona una categoria</MenuItem >
                         {categories.map((category) => (
-                            <Option
+                            <MenuItem 
                                 key={category.id}
                                 value={category.id}
                             >{category.name}
-                            </Option >
+                            </MenuItem  >
                         ))}
                     </Select>
                     {formik.errors.category ? <div>{formik.errors.category}</div> : null}

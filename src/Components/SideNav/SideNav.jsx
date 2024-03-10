@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   Box,
@@ -15,7 +15,7 @@ import { SideNavItem } from './side-nav-item';
 
 export const SideNav = (props) => {
   const { open, onClose } = props;
-  const pathname = useLocation()
+  const pathname = useNavigate()
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
 
   const content = (
