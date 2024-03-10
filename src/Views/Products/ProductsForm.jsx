@@ -59,9 +59,7 @@ const ProductsForm = () => {
         const value = event.target.value
         formik.setFieldValue('category', value);
     };
-
-    console.log(formik.values);
-    
+   
     return (
         <Box>
             <Box sx={{ display: "flex", justifyContent: "center", alignItems: 'center', gap: 2, marginTop: 2 }}>
