@@ -27,12 +27,6 @@ const TOP_NAV_HEIGHT = 64;
 
 export const TopNav = ({onNavOpen}) => {
  
-
-
-
-
-
-
   const { user } = useAuthContext();
 
   return (
@@ -72,7 +66,7 @@ export const TopNav = ({onNavOpen}) => {
           </Stack>
           <Stack alignItems="center" direction="row" spacing={2}>
             <Tooltip title="Contacts">
-              <Link href="/users" sx={{ textDecoration: "none" }}>
+              <Link href="/#/users" sx={{ textDecoration: "none" }}>
                 <IconButton>
                   <SvgIcon fontSize="small">
                     <UsersIcon />
