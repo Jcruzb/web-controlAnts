@@ -56,7 +56,7 @@ export const SideNav = (props) => {
               href="/"
               style={{ textDecoration: "none", color: "inherit" }}
             >
-              Hack-ERP
+              Control Ants
             </Link>
           </Box>
         </Box>

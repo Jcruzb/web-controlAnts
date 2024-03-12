@@ -3,6 +3,7 @@ import TypeSpecimenIcon from '@mui/icons-material/TypeSpecimen';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import CreditScoreIcon from '@mui/icons-material/CreditScore';
 
 
 import { SvgIcon } from "@mui/material";
@@ -64,7 +65,7 @@ export const items = [
     href: "/#/debts",
     icon: (
       <SvgIcon fontSize="small">
-        <TimelineIcon />
+        <CreditScoreIcon />
       </SvgIcon>
     ),
   }
