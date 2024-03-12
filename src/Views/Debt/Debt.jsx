@@ -19,6 +19,8 @@ const Debt = () => {
             })
     }, [])
 
+    console.log(debt)
+
     const handleDelete = (e, params) => {
         console.log(params)
         const id = params.row.id
@@ -35,7 +37,8 @@ const Debt = () => {
 
     const columns = [
         { field: 'name', headerName: 'Nombre', width: 200 },
-        { field: 'description', headerName: 'Descripcion', width: 200 },
+        { field: 'quote', headerName: 'Cuota', width: 200 },
+        {field: 'amount', headerName: 'Monto', width: 200},
         {
             field: 'id', headerName: 'Acciones', width: 200, renderCell: (params) => {
                 console.log(params)
@@ -54,7 +57,8 @@ const Debt = () => {
         return {
             id: debt.id,
             name: debt.name,
-            description: debt.description,
+            quote: debt.quote,
+            amount: debt.amount
         }
     }) : [];
 
