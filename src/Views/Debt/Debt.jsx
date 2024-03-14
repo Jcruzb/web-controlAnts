@@ -38,6 +38,7 @@ const Debt = () => {
     const columns = [
         { field: 'name', headerName: 'Nombre', width: 200 },
         { field: 'quote', headerName: 'Cuota', width: 200 },
+        { field: 'pays', headerName: 'Pagos', width: 200},
         {field: 'amount', headerName: 'Monto', width: 200},
         {
             field: 'id', headerName: 'Acciones', width: 200, renderCell: (params) => {
@@ -58,6 +59,7 @@ const Debt = () => {
             id: debt.id,
             name: debt.name,
             quote: debt.quote,
+            pays: debt.pays,
             amount: debt.amount
         }
     }) : [];
