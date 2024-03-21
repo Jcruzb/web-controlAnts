@@ -4,6 +4,7 @@ import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import CreditScoreIcon from '@mui/icons-material/CreditScore';
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 
 
 import { SvgIcon } from "@mui/material";
@@ -66,6 +67,15 @@ export const items = [
     icon: (
       <SvgIcon fontSize="small">
         <CreditScoreIcon />
+      </SvgIcon>
+    ),
+  },
+  {
+    title: "Ingresos",
+    href: "/#/incomes",
+    icon: (
+      <SvgIcon fontSize="small">
+        <PointOfSaleIcon />
       </SvgIcon>
     ),
   }

@@ -16,6 +16,8 @@ import Debt from './Views/Debt/Debt';
 import DebtForm from './Views/Debt/DebtForm';
 import Users from './Views/Users/Users';
 import UsersForm from './Views/Users/UsersForm';
+import Incomes from './Views/Incomes/Incomes';
+import IncomeForm from './Views/Incomes/IncomesForm';
 
 function App() {
   const { isAuthenticationFetched } = useAuthContext();
@@ -51,6 +53,13 @@ function App() {
         <Route path="/debt/add" element={<DebtForm/>} />
         <Route path="/debts/:id" element={<h1>Deuda</h1>} />
         <Route path="/debts/:id/edit" element={<h1>Editar Deuda</h1>} />
+
+        {/* Incomes */}
+        <Route path="/incomes" element={<Incomes/>} />
+        <Route path="/income/add" element={<IncomeForm/>} />
+        <Route path="/incomes/:id" element={<h1>Deuda</h1>} />
+        <Route path="/incomes/:id/edit" element={<h1>Editar Deuda</h1>} />
+
         {/* Users */}
         <Route path="/users" element={<Users/>} />
         <Route path="/user/add" element={<UsersForm/>} />

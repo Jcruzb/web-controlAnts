@@ -42,7 +42,6 @@ const Debt = () => {
         {field: 'amount', headerName: 'Monto', width: 200},
         {
             field: 'id', headerName: 'Acciones', width: 200, renderCell: (params) => {
-                console.log(params)
                 return (
                     <Box sx={{ display: 'flex', gap: 1 }}>
                         <Button href={`/debt/edit/${params.value}`} variant="contained" color="primary">Editar</Button>
