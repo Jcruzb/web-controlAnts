@@ -62,10 +62,7 @@ const DebtForm = () => {
         status: { success: false }
     });
 
-    console.log(formik.values)
-
-
-    
+   
     return (
         <Box sx={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', gap:2}}>
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
@@ -134,10 +131,10 @@ const DebtForm = () => {
                 />
                 {formik.errors.limitDate ? <div>{formik.errors.limitDate}</div> : null}
                 <Select
-                    placeholder="Usuario"
                     name="user"
+                    label="Usuario"
                     onChange={formik.handleChange}
-                    value={formik.values.user}
+                    value={formik.values.user}  
                 >
                     <MenuItem value="" disabled>Selecciona un usuario</MenuItem>
                     {users.map((user) => (
@@ -151,11 +148,12 @@ const DebtForm = () => {
                 {formik.errors.user ? <div>{formik.errors.user}</div> : null}
                 <Select
                     placeholder="Usuario que pago"
+                    label="Usuario que pago"
                     name="payedUser"
                     onChange={formik.handleChange}
                     value={formik.values.payedUser}
                 >
-                    <MenuItem value="" disabled>Selecciona un usuario</MenuItem>
+                    <MenuItem value="" disabled>Selecciona un usuario de pago</MenuItem>
                     {users.map((user) => (
                         <MenuItem
                             key={user.id}
