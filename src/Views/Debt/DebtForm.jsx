@@ -36,13 +36,13 @@ const DebtForm = () => {
         },
         validationSchema: Yup.object({
             name: Yup.string().min(2).max(50).required('Se requiere el nombre del producto'),
-            quote: Yup.string().min(2).max(50).required('Se requiere la descripcion del producto'),
-            numberOfQuotes: Yup.string().min(2).max(50).required('Se requiere la categoria del producto'),
-            amount: Yup.string().min(2).max(50).required('Se requiere la categoria del producto'),
-            date: Yup.string().min(2).max(50).required('Se requiere la categoria del producto'),
-            limitDate: Yup.string().min(2).max(50).required('Se requiere la categoria del producto'),
-            user: Yup.string().min(2).max(50).required('Se requiere la categoria del producto'),
-            payedUser: Yup.string().min(2).max(50).required('Se requiere la categoria del producto'),
+            quote: Yup.string().min(2).max(50).required('Se requiere el monto de la cuota'),
+            numberOfQuotes: Yup.string().min(2).max(50).required('Se requiere el número de las cuotas'),
+            amount: Yup.string().min(2).max(50).required('Se requiere el monto de la cuota'),
+            date: Yup.string().min(2).max(50).required('Se requiere la fecha de la deuda'),
+            limitDate: Yup.string().min(2).max(50).required('Se requiere la fecha de finalización del pago'),
+            user: Yup.string().min(2).max(50).required('Se requiere el usuario de la deuda'),
+            payedUser: Yup.string().min(2).max(50).required('Se requiere el usuario que pagará la deuda'),
         }),
         onSubmit: (values, helpers) => {
             createDebt(values)
