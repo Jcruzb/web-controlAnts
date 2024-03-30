@@ -3,6 +3,7 @@ import { deleteIncome, getIncomesList } from "../../Services/IncomeService";
 import { Box, Button, Divider, Typography } from "@mui/material";
 import DataTable from "../../Components/DataTable/DataTable";
 import AlertModal from "../../Components/Modal/AlertModal";
+import { formatDate } from "../../utils/funtions"
 
 const Income = () => {
     const [income, setIncome] = useState([]);
@@ -22,20 +23,21 @@ const Income = () => {
 
         const id = params
         deleteIncome(id)
-        .then((response) => {
-            console.log(response)
-            setIncome(income.filter(income => income.id != id))
-            setOpen(true)
-        })
-        .catch((error) => {
-            console.log(error)
-        })
+            .then((response) => {
+                console.log(response)
+                setIncome(income.filter(income => income.id != id))
+                setOpen(true)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }
 
     const columns = [
-        { field: 'source', headerName: 'Fuente de ingreso', width: 300 },
-        { field: 'amount', headerName: 'Monto', width: 300 },
-        { field: 'frecuency', headerName: 'Frecuencia', width: 300 },
+        { field: 'user', headerName: 'Usuario', width: 300 },
+        { field: 'source', headerName: 'Fuente de ingreso', width: 150 },
+        { field: 'amount', headerName: 'Monto', width: 150 },
+        { field: 'frecuency', headerName: 'Fecha', width: 150 },
         {
             field: 'id', headerName: 'Acciones', width: 400, renderCell: (params) => {
                 return (
@@ -48,13 +50,16 @@ const Income = () => {
         }
     ];
 
+    console.log(income)
+
     const rows = income.map((item) => {
 
         return {
             id: item.id,
+            user: item.user.name,
             source: item.source,
             amount: item.amount,
-            frecuency: item.frecuency
+            frecuency: item.frecuency === "Mensual" ? item.frecuency : formatDate(item.updatedAt)
         };
     });
 
