@@ -1,20 +1,43 @@
 
-import { PieChart } from '@mui/x-charts/PieChart';
+import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
+
+
 
 // eslint-disable-next-line react/prop-types
-const  BasicPie = ({otherData}) => {
-   
+const BasicPie = ({ otherData }) => {
+  console.log(otherData)
+
+
+  const data = [...otherData]?.map((data) => {
+    return {
+      id: data.id,
+      label: data.name,
+      value: data.value,
+      date: data.date
+    }
+  })
+
+
   return (
+
     <PieChart
       series={[
         {
-          data: [...otherData
-          ],
+          arcLabel: (item) => `${item.label} (${item.value})`,
+          arcLabelMinAngle: 45,
+          data,
         },
       ]}
-      width={400}
+      sx={{
+        [`& .${pieArcLabelClasses.root}`]: {
+          fill: 'white',
+          fontWeight: 'bold',
+        },
+      }}
+      width={500}
       height={200}
     />
+
   );
 }
 

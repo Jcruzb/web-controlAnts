@@ -23,16 +23,6 @@ export const items = [
   }
   ,
   {
-    title: "Productos",
-    href: "/#/products",
-    icon: (
-      <SvgIcon fontSize="small">
-        <ShoppingCartIcon />
-      </SvgIcon>
-    ),
-  }
-  ,
-  {
     title: "Categorías",
     href: "/#/categorys",
     icon: (
@@ -52,15 +42,6 @@ export const items = [
     ),
   }
   ,
-  {
-    title: "Historial",
-    href: "/#/history",
-    icon: (
-      <SvgIcon fontSize="small">
-        <TimelineIcon />
-      </SvgIcon>
-    ),
-  },
   {
     title: "Deudas",
     href: "/#/debts",

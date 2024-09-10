@@ -12,7 +12,6 @@ import MenuItem from '@mui/material/MenuItem';
 
 
 const Expense = () => {
-    const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
 
     const KIND = [ 'fijo', 'variable', 'extra' ];
@@ -20,15 +19,6 @@ const Expense = () => {
     const navigate = useNavigate();
     
     useEffect(() => {
-        getProductsList()
-            .then((response) => {
-                setProducts(response);
-            }
-            )
-            .catch((error) => {
-                console.log(error);
-            }
-            );
         getCategoriesList()
             .then((response) => {
                 setCategories(response);
@@ -47,7 +37,6 @@ const Expense = () => {
             kind: '',
             date: '',
             category: '',
-            product: '',
 
         },
         validationSchema: Yup.object({
@@ -56,7 +45,6 @@ const Expense = () => {
             kind: Yup.string().min(2).max(50).required('Se requiere el tipo del gasto'),
             date: Yup.date().required('Se requiere la fecha del gasto'),
             category: Yup.string().required('Se requiere la categoria del gasto'),
-            product: Yup.string().required('Se requiere el producto del gasto'),
         }),
         onSubmit: (values, helpers) => {
             createExpense(values)
@@ -155,23 +143,8 @@ const Expense = () => {
                         })}
                     </Select>
                     {formik.errors.category ? <div>{formik.errors.category}</div> : null}
-                    <Select
-                        id="product"
-                        name="product"
-                        label="Producto"
-                        variant="outlined"
-                        type="text"
-                        onChange={(e) => handleSelectChange(e, 'product')}
-                        value={formik.values.product}
-                    >
-                        <MenuItem value="" disabled>Selecciona un producto</MenuItem>
-                        {products.map((product) => {
-                            return (
-                                <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>
-                            )
-                        })}
-                    </Select>
-                    {formik.errors.product ? <div>{formik.errors.product}</div> : null}
+                   
+
                     <Button onClick={formik.handleSubmit} variant="contained" type="submit">Agregar</Button>
                 </form>
             </Box>

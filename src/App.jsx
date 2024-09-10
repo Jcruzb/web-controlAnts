@@ -5,11 +5,8 @@ import NotFound from './Views/NotFound/NotFound'
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute';
 import Home from './Views/Home/Home';
 import { useAuthContext } from './Contexts/AuthContext';
-import Products from './Views/Products/Products';
 import Category from './Views/Category/Category';
 import Expense from './Views/Expense/Expense';
-import History from './Views/History/History';
-import ProductsForm from './Views/Products/ProductsForm';
 import CategoryForm from './Views/Category/CategoryForm';
 import ExpenseForm from './Views/Expense/ExpenseForm';
 import Debt from './Views/Debt/Debt';
@@ -33,11 +30,7 @@ function App() {
       <Route path="/login" element={<Login/>} />
       <Route path="/" element={<ProtectedRoute/>}>
         <Route path="/home" element={<Home/>} />
-        {/* Products */}
-        <Route path="/products" element={<Products/>} />
-        <Route path="/product/add" element={<ProductsForm/>} />
-        <Route path="/products/:id" element={<h1>Producto</h1>} />
-        <Route path="/products/:id/edit" element={<h1>Editar Producto</h1>} />
+
         {/* Categorys */}
         <Route path="/categorys" element={<Category/>} />
         <Route path="/category/add" element={<CategoryForm/>} />
@@ -65,8 +58,7 @@ function App() {
         <Route path="/user/add" element={<UsersForm/>} />
         <Route path="/users/:id" element={<h1>Usuario</h1>} />
         <Route path="/users/:id/edit" element={<h1>Editar Usuario</h1>} />
-        {/* History */}
-        <Route path="/history" element={<History/>} />
+
       </Route>
 
     </Routes>
