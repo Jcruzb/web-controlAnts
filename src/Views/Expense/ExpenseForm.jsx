@@ -3,7 +3,6 @@ import * as Yup from "yup";
 import { createExpense } from "../../Services/ExpenseService";
 import { Box, Button, Divider, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getProductsList } from "../../Services/ProductService";
 import { getCategoriesList } from "../../Services/CategoryService";
 import AlertModal from "../../Components/Modal/AlertModal";
 import Select from '@mui/material/Select';
