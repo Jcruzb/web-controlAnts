@@ -33,6 +33,7 @@ const Income = () => {
             })
     }
 
+
     const columns = [
         { field: 'user', headerName: 'Usuario', width: 300 },
         { field: 'source', headerName: 'Fuente de ingreso', width: 150 },
@@ -42,7 +43,7 @@ const Income = () => {
             field: 'id', headerName: 'Acciones', width: 400, renderCell: (params) => {
                 return (
                     <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Button href={`/income/edit/${params.value}`} variant="contained" color="primary">Editar</Button>
+                        <Button href={`/#/income/edit/${params.value}`} variant="contained" color="primary">Editar</Button>
                         <Button onClick={(e) => handleDelete(e, params.value)} variant="contained" color="error">Eliminar</Button>
                     </Box>
                 )
@@ -50,13 +51,12 @@ const Income = () => {
         }
     ];
 
-    console.log(income)
 
-    const rows = income.map((item) => {
+    const rows = income?.map((item) => {
 
         return {
             id: item.id,
-            user: item.user.name,
+            user: item.responsable.name,
             source: item.source,
             amount: item.amount,
             frecuency: item.frecuency === "Mensual" ? item.frecuency : formatDate(item.updatedAt)
