@@ -58,7 +58,7 @@ const Debt = () => {
             id: debt.id,
             name: debt.name,
             quote: debt.quote,
-            pays: debt.pays,
+            pays: debt.pays.length,
             amount: debt.amount
         }
     }) : [];

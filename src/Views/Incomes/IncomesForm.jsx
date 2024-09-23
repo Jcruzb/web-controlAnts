@@ -2,7 +2,7 @@ import { Box, Button, Divider, InputLabel, TextField, Typography } from "@mui/ma
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate, useParams } from "react-router";
-import { createIncome, getIncome } from "../../Services/IncomeService";
+import { createIncome, getIncomeById } from "../../Services/IncomeService";
 import AlertModal from "../../Components/Modal/AlertModal";
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -12,7 +12,6 @@ import { useAuthContext } from "../../Contexts/AuthContext";
 
 const IncomeForm = () => {
     const { id } = useParams();
-
     const { user } = useAuthContext();
 
     const FREQUENCY = ['Mensual', 'Único'];
@@ -33,7 +32,7 @@ const IncomeForm = () => {
 
     useEffect(() => {
         if (id) {
-            getIncome(id)
+            getIncomeById(id)
                 .then((response) => {
                     formik.setValues({
                         ...response,
@@ -67,14 +66,10 @@ const IncomeForm = () => {
             frequency: Yup.string().required('Se requiere la frecuencia del ingreso').oneOf(FREQUENCY),
             incomeGroup: Yup.string().oneOf(GROUP),
             date: Yup.date(),
-            limitDate: Yup.date().when('frequency', {
-                is: 'Mensual',
-                then: Yup.date(),
-            }),
+            limitDate: Yup.date().nullable(),  // Optional, displayed only if isActive is false
             user: Yup.string().required('Seleccione el responsable del ingreso')
         }),
         onSubmit: (values, helpers) => {
-            console.log('entra')
             createIncome(values)
                 .then(() => {
                     helpers.resetForm();
@@ -104,35 +99,44 @@ const IncomeForm = () => {
                         type="text"
                         name="source"
                         onChange={formik.handleChange}
-                        value={formik.values.source || ''} // Aseguramos que siempre tenga un valor
+                        value={formik.values.source || ''} 
                     />
-                    {formik.errors.source ? <div>{formik.errors.source}</div> : null}
+                    {formik.errors.source && <div>{formik.errors.source}</div>}
 
                     <TextField
                         id="amount"
                         label="Monto"
                         variant="outlined"
-                        type="number"  // Cambiamos a "number"
+                        type="number"
                         name="amount"
                         onChange={formik.handleChange}
-                        value={formik.values.amount || 0}  // Valor inicial asegurado
+                        value={formik.values.amount || 0}
                     />
-                    {formik.errors.amount ? <div>{formik.errors.amount}</div> : null}
+                    {formik.errors.amount && <div>{formik.errors.amount}</div>}
 
                     <InputLabel htmlFor="frequency">Frecuencia del ingreso</InputLabel>
                     <Select
                         name="frequency"
                         label="Frecuencia"
                         onChange={formik.handleChange}
-                        value={formik.values.frequency || ''}  // Valor inicial asegurado
+                        value={formik.values.frequency || ''} 
                     >
                         {FREQUENCY.map((frequency, index) => (
                             <MenuItem key={index} value={frequency}>{frequency}</MenuItem>
                         ))}
                     </Select>
-                    {formik.errors.frequency ? <div>{formik.errors.frequency}</div> : null}
+                    {formik.errors.frequency && <div>{formik.errors.frequency}</div>}
 
-                    {formik.values.frequency === "Mensual" && (
+                    <InputLabel htmlFor="isActive">¿Ingreso Activo?</InputLabel>
+                    <Select
+                        name="isActive"
+                        value={formik.values.isActive || true}
+                        onChange={formik.handleChange}
+                    >
+                        <MenuItem value={true}>Sí</MenuItem>
+                        <MenuItem value={false}>No</MenuItem>
+                    </Select>
+                    {formik.values.isActive === false && (
                         <>
                             <InputLabel htmlFor="limitDate">Fecha límite</InputLabel>
                             <TextField
@@ -141,59 +145,25 @@ const IncomeForm = () => {
                                 type="date"
                                 name="limitDate"
                                 onChange={formik.handleChange}
-                                value={formik.values.limitDate || ''}  // Aseguramos que siempre tenga un valor
+                                value={formik.values.limitDate || ''}
                             />
-                            {formik.errors.limitDate ? <div>{formik.errors.limitDate}</div> : null}
+                            {formik.errors.limitDate && <div>{formik.errors.limitDate}</div>}
                         </>
                     )}
-
-                    {user.family ?
-                        <>
-                        <InputLabel htmlFor="incomeGroup">Grupo del ingreso</InputLabel>
-                        <Select
-                            name="incomeGroup"
-                            label="Grupo"
-                            onChange={formik.handleChange}
-                            value={formik.values.incomeGroup || ''}  // Valor inicial asegurado
-                        >
-                            {GROUP.map((group, index) => (
-                                <MenuItem key={index} value={group}>{group}</MenuItem>
-                            ))}
-                        </Select>
-                        {formik.errors.incomeGroup ? <div>{formik.errors.incomeGroup}</div> : null}
-                    </>
-                    : null}
 
                     <InputLabel htmlFor="user">Usuario Responsable</InputLabel>
                     <Select
                         name="user"
                         label="Usuario"
                         onChange={formik.handleChange}
-                        value={formik.values.user || ''}  // Valor inicial asegurado
+                        value={formik.values.user || ''}
                     >
                         <MenuItem value="" disabled>Selecciona un usuario</MenuItem>
                         {users.map((user) => (
                             <MenuItem key={user.id} value={user.id}>{user.name}</MenuItem>
                         ))}
                     </Select>
-                    {formik.errors.user ? <div>{formik.errors.user}</div> : null}
-
-                    {
-                        formik.values.frequency === "Mensual" ?
-                            <>
-                                <InputLabel htmlFor="isActive">¿Ingreso Activo?</InputLabel>
-                                <Select
-                                    name="isActive"
-                                    value={formik.values.isActive || true}  // Valor inicial asegurado
-                                    onChange={formik.handleChange}
-                                >
-                                    <MenuItem value={true}>Sí</MenuItem>
-                                    <MenuItem value={false}>No</MenuItem>
-                                </Select>
-                            </>
-
-                            : null
-                    }
+                    {formik.errors.user && <div>{formik.errors.user}</div>}
 
                     <Button variant="contained" type="submit">{id ? "Editar Ingreso" : "Agregar Ingreso"}</Button>
                 </form>
