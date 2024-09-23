@@ -5,7 +5,7 @@ import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
 
 // eslint-disable-next-line react/prop-types
 const BasicPie = ({ otherData }) => {
-  console.log(otherData)
+
 
 
   const data = [...otherData]?.map((data) => {
