@@ -1,51 +1,85 @@
-import { Box, Card, Divider, FormControlLabel, Switch, Typography } from "@mui/material"
-
+import { Box, FormControlLabel, Switch, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import PieCharts from "../../Components/Charts/PieCharts";
-
 import { getDebtbyId } from "../../Services/DebtService"
 import { getIncomeById } from "../../Services/IncomeService"
-
 import { useAuthContext } from "../../Contexts/AuthContext";
-import ResumeDebtTable from "../../Components/ResumeDebtTable/ResumeDebtTable";
-
-
+import { getUser } from "../../Services/UsersService";
+import DebtCard from "../../Components/DebtCard/DebtCard";
 
 const Home = () => {
 
     const { user } = useAuthContext();
-
     const [incomes, setIncomes] = useState([])
     const [debts, setDebts] = useState([])
-    const [selectResume, setSelectResume] = useState(true)
+    const [selectResume, setSelectResume] = useState(false)
+    const [data, setData] = useState({
+        debts: [],
+        incomes: []
+    })
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (user.family?.members?.length) {
+            const incomesToData = [];
+            const debtsToData = [];
 
-        const debtPromises = user.debts.map(debt => getDebtbyId(debt));
-        const incomePromises = user.incomes.map(income => getIncomeById(income));
+            const familyMembers = user.family.members.map(member => member.user);
 
-        Promise.all([...debtPromises, ...incomePromises])
-            .then(results => {
-                const debtsResults = results.slice(0, debtPromises.length);
-                const incomesResults = results.slice(debtPromises.length);
-                setDebts(debtsResults);
-                setIncomes(incomesResults);
-            })
-            .catch(error => {
-                console.error('Error fetching debts or incomes:', error);
-            })
-            .finally(() => {
-                setLoading(false);
+            Promise.all(familyMembers.map(member => getUser(member)))
+                .then(responses => {
+                    responses.forEach(response => {
+                        incomesToData.push(...response.incomes);
+                        debtsToData.push(...response.debts);
+                    });
+
+                    setData({
+                        debts: debtsToData,
+                        incomes: incomesToData
+                    });
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        } else {
+            setData({
+                debts: user.debts,
+                incomes: user.incomes
             });
+        }
     }, [user]);
+
+    useEffect(() => {
+        let debtPromises = [];
+        let incomePromises = [];
+
+        if (!selectResume) {
+            debtPromises = data?.debts.map(debt => getDebtbyId(debt));
+            incomePromises = data?.incomes.map(income => getIncomeById(income));
+        } else {
+            debtPromises = user?.debts.map(debt => getDebtbyId(debt));
+            incomePromises = user?.incomes.map(income => getIncomeById(income));
+        }
+
+        if (data.debts.length || data.incomes.length) {
+            Promise.all([...debtPromises, ...incomePromises])
+                .then(results => {
+                    const debtsResults = results.slice(0, debtPromises.length);
+                    const incomesResults = results.slice(debtPromises.length);
+                    setDebts(debtsResults);
+                    setIncomes(incomesResults);
+                })
+                .catch(error => {
+                    console.error('Error fetching debts or incomes:', error);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        }
+    }, [data, selectResume, user]);
 
     const handleResumeChange = () => {
         setSelectResume(!selectResume)
     }
-
-
-
 
     if (loading) {
         return <Box> Loading ...</Box>
@@ -56,39 +90,18 @@ const Home = () => {
             <Box sx={{ display: 'flex', flexDirection: 'column', padding: 3, gap: 2 }}>
                 <Typography variant="h3">Resumen</Typography>
                 {user.family ?
-                <>
-                <Typography variant="h5">Familia: {user.family.familyName}</Typography>
-                <FormControlLabel
-                    control={
-                        <Switch checked={selectResume.personal} onChange={(e) => handleResumeChange(e)} name="resume" />
-                    }
-                    label={selectResume ? 'Personal' : 'Familiar'}
-                />
-                </>
-                : null}
+                    <>
+                        <Typography variant="h5">Familia: {user.family.familyName}</Typography>
+                        <FormControlLabel
+                            control={
+                                <Switch checked={selectResume.personal} onChange={(e) => handleResumeChange(e)} name="resume" />
+                            }
+                            label={selectResume ? 'Personal' : 'Familiar'}
+                        />
+                    </>
+                    : null}
             </Box>
-
-            <Card>
-                <Typography variant="h4">Deudas</Typography>
-                <Divider />
-                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, padding: 2 }}>
-                    <PieCharts
-                        otherData={
-                            debts.map((debt) => {
-                                return {
-                                    id: debt.id,
-                                    name: debt.name,
-                                    value: debt.amount,
-                                    date: debt.date
-                                }
-                            })
-                        }
-                        width={200}
-                        height={200}
-                    />
-                    <ResumeDebtTable debts={debts} />
-                </Box>
-            </Card>
+            <DebtCard title="Deudas" debts={debts} />
         </Box>
 
     );

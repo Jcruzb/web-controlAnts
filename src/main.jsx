@@ -6,6 +6,7 @@ import { HashRouter } from 'react-router-dom'
 import { ThemeProvider, createTheme  } from '@mui/material/styles'; 
 import { CssBaseline } from '@mui/material'
 import { AuthContextProvider } from './Contexts/AuthContext.jsx'
+import { FamilyContextProvider } from './Contexts/FamlilyContext.jsx'
 
 const theme = createTheme();
 
