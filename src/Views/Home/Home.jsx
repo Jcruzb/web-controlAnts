@@ -1,25 +1,26 @@
-import { Box, FormControlLabel, Switch, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
-import { getDebtbyId } from "../../Services/DebtService"
-import { getIncomeById } from "../../Services/IncomeService"
+import { Box, FormControlLabel, Switch, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { getDebtbyId } from "../../Services/DebtService";
+import { getIncomeById } from "../../Services/IncomeService";
+import { getExpenseName } from "../../Services/ExpenseService";
 import { useAuthContext } from "../../Contexts/AuthContext";
 import { getUser } from "../../Services/UsersService";
 import DebtCard from "../../Components/DebtCard/DebtCard";
 import IncomeCard from "../../Components/IncomeCard/IncomeCard";
-import { getExpenseName } from "../../Services/ExpenseService";
+import ExpenseCard from "../../Components/ExpenseCard/ExpenseCard"; // Nuevo componente de gastos
 
 const Home = () => {
 
     const { user } = useAuthContext();
-    const [incomes, setIncomes] = useState([])
-    const [debts, setDebts] = useState([])
-    const [expenses, setExpenses] = useState([])
-    const [selectResume, setSelectResume] = useState(false)
+    const [incomes, setIncomes] = useState([]);
+    const [debts, setDebts] = useState([]);
+    const [expenses, setExpenses] = useState([]);
+    const [selectResume, setSelectResume] = useState(false);
     const [data, setData] = useState({
         debts: [],
         incomes: [],
         expenses: []
-    })
+    });
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -60,9 +61,11 @@ const Home = () => {
         let debtPromises = [];
         let incomePromises = [];
         let expensePromises = [];
-    
+
         if (!selectResume) {
-            debtPromises = data?.debts.map(debt => getDebtbyId(debt));
+            debtPromises
+
+ = data?.debts.map(debt => getDebtbyId(debt));
             incomePromises = data?.incomes.map(income => getIncomeById(income));
             expensePromises = data?.expenses.map(expense => getExpenseName(expense));
         } else {
@@ -70,14 +73,13 @@ const Home = () => {
             incomePromises = user?.incomes.map(income => getIncomeById(income));
             expensePromises = user?.expenses.map(expense => getExpenseName(expense));
         }
-    
+
         if (data.debts.length || data.incomes.length || data.expenses.length) {
             Promise.all([...debtPromises, ...incomePromises, ...expensePromises])
                 .then(results => {
                     const debtsResults = results.slice(0, debtPromises.length);
                     const incomesResults = results.slice(debtPromises.length, debtPromises.length + incomePromises.length);
-                    const expensesResults = results.slice(debtPromises.length + incomePromises.length); // Ajuste aquí
-    
+                    const expensesResults = results.slice(debtPromises.length + incomePromises.length);
                     setDebts(debtsResults);
                     setIncomes(incomesResults);
                     setExpenses(expensesResults);
@@ -91,14 +93,12 @@ const Home = () => {
         }
     }, [data, selectResume, user]);
 
-    console.log(expenses)
-
     const handleResumeChange = () => {
-        setSelectResume(!selectResume)
+        setSelectResume(!selectResume);
     }
 
     if (loading) {
-        return <Box> Loading ...</Box>
+        return <Box> Loading ...</Box>;
     }
 
     return (
@@ -120,6 +120,7 @@ const Home = () => {
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, padding: 3 }}>
                 <DebtCard title="Deudas" debts={debts} />
                 <IncomeCard title="Ingresos" incomes={incomes} />
+                <ExpenseCard title="Gastos" expenses={expenses} /> {/* Nuevo componente de gastos */}
             </Box>
         </Box>
 
@@ -127,8 +128,3 @@ const Home = () => {
 }
 
 export default Home;
-
-
-/* 
-         
-*/
