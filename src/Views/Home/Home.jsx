@@ -5,16 +5,20 @@ import { getIncomeById } from "../../Services/IncomeService"
 import { useAuthContext } from "../../Contexts/AuthContext";
 import { getUser } from "../../Services/UsersService";
 import DebtCard from "../../Components/DebtCard/DebtCard";
+import IncomeCard from "../../Components/IncomeCard/IncomeCard";
+import { getExpenseName } from "../../Services/ExpenseService";
 
 const Home = () => {
 
     const { user } = useAuthContext();
     const [incomes, setIncomes] = useState([])
     const [debts, setDebts] = useState([])
+    const [expenses, setExpenses] = useState([])
     const [selectResume, setSelectResume] = useState(false)
     const [data, setData] = useState({
         debts: [],
-        incomes: []
+        incomes: [],
+        expenses: []
     })
     const [loading, setLoading] = useState(true);
 
@@ -22,6 +26,7 @@ const Home = () => {
         if (user.family?.members?.length) {
             const incomesToData = [];
             const debtsToData = [];
+            const expensesToData = [];
 
             const familyMembers = user.family.members.map(member => member.user);
 
@@ -30,11 +35,13 @@ const Home = () => {
                     responses.forEach(response => {
                         incomesToData.push(...response.incomes);
                         debtsToData.push(...response.debts);
+                        expensesToData.push(...response.expenses);
                     });
 
                     setData({
                         debts: debtsToData,
-                        incomes: incomesToData
+                        incomes: incomesToData,
+                        expenses: expensesToData
                     });
                 })
                 .catch(error => {
@@ -43,7 +50,8 @@ const Home = () => {
         } else {
             setData({
                 debts: user.debts,
-                incomes: user.incomes
+                incomes: user.incomes,
+                expenses: user.expenses
             });
         }
     }, [user]);
@@ -51,31 +59,39 @@ const Home = () => {
     useEffect(() => {
         let debtPromises = [];
         let incomePromises = [];
-
+        let expensePromises = [];
+    
         if (!selectResume) {
             debtPromises = data?.debts.map(debt => getDebtbyId(debt));
             incomePromises = data?.incomes.map(income => getIncomeById(income));
+            expensePromises = data?.expenses.map(expense => getExpenseName(expense));
         } else {
             debtPromises = user?.debts.map(debt => getDebtbyId(debt));
             incomePromises = user?.incomes.map(income => getIncomeById(income));
+            expensePromises = user?.expenses.map(expense => getExpenseName(expense));
         }
-
-        if (data.debts.length || data.incomes.length) {
-            Promise.all([...debtPromises, ...incomePromises])
+    
+        if (data.debts.length || data.incomes.length || data.expenses.length) {
+            Promise.all([...debtPromises, ...incomePromises, ...expensePromises])
                 .then(results => {
                     const debtsResults = results.slice(0, debtPromises.length);
-                    const incomesResults = results.slice(debtPromises.length);
+                    const incomesResults = results.slice(debtPromises.length, debtPromises.length + incomePromises.length);
+                    const expensesResults = results.slice(debtPromises.length + incomePromises.length); // Ajuste aquí
+    
                     setDebts(debtsResults);
                     setIncomes(incomesResults);
+                    setExpenses(expensesResults);
                 })
                 .catch(error => {
-                    console.error('Error fetching debts or incomes:', error);
+                    console.error('Error fetching debts, incomes, or expenses:', error);
                 })
                 .finally(() => {
                     setLoading(false);
                 });
         }
     }, [data, selectResume, user]);
+
+    console.log(expenses)
 
     const handleResumeChange = () => {
         setSelectResume(!selectResume)
@@ -101,7 +117,10 @@ const Home = () => {
                     </>
                     : null}
             </Box>
-            <DebtCard title="Deudas" debts={debts} />
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, padding: 3 }}>
+                <DebtCard title="Deudas" debts={debts} />
+                <IncomeCard title="Ingresos" incomes={incomes} />
+            </Box>
         </Box>
 
     );
