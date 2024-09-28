@@ -42,7 +42,6 @@ const Expense = () => {
         { field: 'name', headerName: 'Nombre', width: 200 },
         { field: 'amount', headerName: 'Monto', width: 200 },
         { field: 'kind', headerName: 'Tipo', width: 200 },
-        { field: 'product', headerName: 'Producto', width: 200 },
         { field: 'category', headerName: 'Categoria', width: 200 },
         { field: 'date', headerName: 'Fecha', width: 200 },
         {
@@ -62,10 +61,9 @@ const Expense = () => {
     const rows = expenses ? expenses.map((expense) => {
         return {
             id: expense.id,
-            name: expense.name,
+            name: expense.kind,
             amount: expense.amount,
             kind: expense.kind,
-            product: expense.product.name,
             category: expense.category.name,
             date: DateFormat(expense.date),
         }
