@@ -39,10 +39,10 @@ const Expense = () => {
     }
 
     const columns = [
-        { field: 'name', headerName: 'Nombre', width: 200 },
-        { field: 'amount', headerName: 'Monto', width: 200 },
-        { field: 'kind', headerName: 'Tipo', width: 200 },
-        { field: 'category', headerName: 'Categoria', width: 200 },
+        { field: 'description', headerName: 'Descripción', width: 400 },
+        { field: 'amount', headerName: 'Monto', width: 100 },
+        { field: 'kind', headerName: 'Tipo', width: 100 },
+        { field: 'category', headerName: 'Categoria', width: 100 },
         { field: 'date', headerName: 'Fecha', width: 200 },
         {
             field: 'id', headerName: 'Acciones', width: 200, renderCell: (params) => {
@@ -58,18 +58,27 @@ const Expense = () => {
         }
     ];
 
-    const rows = expenses ? expenses.map((expense) => {
+
+    if (expenses.length === 0) {
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+                <Typography variant="h4">No hay gastos registrados</Typography>
+            </Box>
+        )
+    }
+
+    console.log(expenses);
+
+    const rows = expenses ? expenses?.map((expense) => {
         return {
             id: expense.id,
-            name: expense.kind,
+            description: expense.description,
             amount: expense.amount,
             kind: expense.kind,
-            category: expense.category.name,
+            category: expense?.category?.name,
             date: DateFormat(expense.date),
         }
     }) : [];
-
-
 
 
     return (
