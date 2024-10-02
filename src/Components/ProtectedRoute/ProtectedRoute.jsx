@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuthContext } from '/src/contexts/AuthContext';
+import { useAuthContext } from '../../Contexts/AuthContext';
 
 import { TotalBar } from "../TotalBar/TotalBar";
 
