@@ -3,25 +3,26 @@ import { StrictMode } from "react";
 import App from './App.jsx'
 import './index.css'
 import { HashRouter } from 'react-router-dom'
-import { ThemeProvider, createTheme  } from '@mui/material/styles'; 
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material'
 import { AuthContextProvider } from './Contexts/AuthContext.jsx'
-import { FamilyContextProvider } from './Contexts/FamlilyContext.jsx'
 
 const theme = createTheme();
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ThemeProvider 
+    <ThemeProvider
       theme={theme}
 
     >
       <CssBaseline />
       <AuthContextProvider>
-        <HashRouter>
-          <App />
-        </HashRouter>
+        
+          <HashRouter>
+            <App />
+          </HashRouter>
+
       </AuthContextProvider>
     </ThemeProvider>
   </StrictMode>

@@ -15,6 +15,7 @@ import Users from './Views/Users/Users';
 import UsersForm from './Views/Users/UsersForm';
 import Incomes from './Views/Incomes/Incomes';
 import IncomeForm from './Views/Incomes/IncomesForm';
+import Program from './Views/Program/Program';
 
 function App() {
   const { isAuthenticationFetched } = useAuthContext();
@@ -52,6 +53,9 @@ function App() {
         <Route path="/income/add" element={<IncomeForm />} />
         <Route path="/incomes/:id" element={<h1>Deuda</h1>} />
         <Route path="/income/edit/:id" element={<IncomeForm />} />
+
+        {/*Program*/}
+        <Route path="/program" element={<Program />} />
 
         {/* Users */}
         <Route path="/users" element={<Users />} />

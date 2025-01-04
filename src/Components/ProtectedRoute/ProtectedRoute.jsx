@@ -3,6 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuthContext } from '../../Contexts/AuthContext';
 
 import { TotalBar } from "../TotalBar/TotalBar";
+import { FamilyContextProvider } from "../../Contexts/FamlilyContext";
 
 const ProtectedRoute = () => {
   const { user } = useAuthContext();
@@ -13,7 +14,9 @@ const ProtectedRoute = () => {
 
   return (
     <TotalBar>
+      <FamilyContextProvider>
       <Outlet />
+      </FamilyContextProvider>
     </TotalBar>
   );
 }
