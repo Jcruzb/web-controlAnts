@@ -2,7 +2,7 @@ import { Box, Button, Divider, InputLabel, TextField, Typography } from "@mui/ma
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate, useParams } from "react-router";
-import { createIncome, getIncomeById } from "../../Services/IncomeService";
+import { createIncome, updateIncome, getIncomeById } from "../../Services/IncomeService";
 import AlertModal from "../../Components/Modal/AlertModal";
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -13,7 +13,6 @@ import { useAuthContext } from "../../Contexts/AuthContext";
 const IncomeForm = () => {
     const { id } = useParams();
     const { user } = useAuthContext();
-
     const FREQUENCY = ['Mensual', 'Único'];
     const GROUP = ['familiar', 'personal'];
     const [users, setUsers] = useState([]);
@@ -36,7 +35,7 @@ const IncomeForm = () => {
                 .then((response) => {
                     formik.setValues({
                         ...response,
-                        date: response.date || ''  // Aseguramos que "date" tenga un valor inicial
+                        date: response.date || '' // Aseguramos que "date" tenga un valor inicial
                     });
                 })
                 .catch((error) => {
@@ -53,7 +52,7 @@ const IncomeForm = () => {
             date: '',
             limitDate: '',
             incomeGroup: user.family ? '' : 'personal',
-            user: '',
+            responsable: '',  // Se usa "responsable" para coincidir con el modelo
             isActive: true,
             status: {
                 planeado: true,
@@ -61,37 +60,59 @@ const IncomeForm = () => {
             }
         },
         validationSchema: Yup.object({
-            source: Yup.string().min(2).max(50).required('Se requiere registrar la fuente de ingresos'),
-            amount: Yup.number().min(0, 'El ingreso debe ser mayor a cero').required('Se requiere el monto'),
-            frequency: Yup.string().required('Se requiere la frecuencia del ingreso').oneOf(FREQUENCY),
+            source: Yup.string()
+                       .min(2, 'El nombre de la fuente es muy corto')
+                       .max(50, 'El nombre de la fuente es muy largo')
+                       .required('Se requiere registrar la fuente de ingresos'),
+            amount: Yup.number()
+                       .min(0, 'El ingreso debe ser mayor a cero')
+                       .required('Se requiere el monto'),
+            frequency: Yup.string()
+                          .oneOf(FREQUENCY)
+                          .required('Se requiere la frecuencia del ingreso'),
             incomeGroup: Yup.string().oneOf(GROUP),
             date: Yup.date(),
-            limitDate: Yup.date().nullable(),  // Optional, displayed only if isActive is false
-            user: Yup.string().required('Seleccione el responsable del ingreso')
+            limitDate: Yup.date().nullable(),
+            responsable: Yup.string().required('Seleccione el responsable del ingreso')
         }),
         onSubmit: (values, helpers) => {
-            createIncome(values)
-                .then(() => {
-                    helpers.resetForm();
-                    helpers.setStatus({ success: true });
-                })
-                .catch((error) => {
-                    helpers.setStatus({ success: false });
-                    helpers.setErrors({ submit: error.response.data.message });
-                    helpers.setSubmitting(false);
-                });
+            if (id) {
+                // Si existe id, actualizamos el ingreso
+                updateIncome(id, values)
+                    .then(() => {
+                        helpers.resetForm();
+                        helpers.setStatus({ success: true });
+                    })
+                    .catch((error) => {
+                        helpers.setStatus({ success: false });
+                        helpers.setErrors({ submit: error.response.data.message });
+                        helpers.setSubmitting(false);
+                    });
+            } else {
+                // Caso contrario, creamos el ingreso
+                createIncome(values)
+                    .then(() => {
+                        helpers.resetForm();
+                        helpers.setStatus({ success: true });
+                    })
+                    .catch((error) => {
+                        helpers.setStatus({ success: false });
+                        helpers.setErrors({ submit: error.response.data.message });
+                        helpers.setSubmitting(false);
+                    });
+            }
         },
         status: { success: false }
     });
 
     return (
         <Box>
-            <Box sx={{ display: "flex", justifyContent: "center", alignItems: 'center', gap: 2, marginTop: 2 }}>
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 2, marginTop: 2 }}>
                 <Typography variant="h4">{id ? "Editar Ingreso" : "Agregar Ingreso"}</Typography>
             </Box>
             <Divider sx={{ marginTop: 3 }} />
-            <Box sx={{ display: "flex", justifyContent: "center", alignItems: 'center', gap: 2, marginTop: 2 }}>
-                <form onSubmit={formik.handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 2, marginTop: 2 }}>
+                <form onSubmit={formik.handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                     <TextField
                         id="source"
                         label="Fuente de ingreso"
@@ -119,10 +140,10 @@ const IncomeForm = () => {
                         name="frequency"
                         label="Frecuencia"
                         onChange={formik.handleChange}
-                        value={formik.values.frequency || ''} 
+                        value={formik.values.frequency || ''}
                     >
-                        {FREQUENCY.map((frequency, index) => (
-                            <MenuItem key={index} value={frequency}>{frequency}</MenuItem>
+                        {FREQUENCY.map((freq, index) => (
+                            <MenuItem key={index} value={freq}>{freq}</MenuItem>
                         ))}
                     </Select>
                     {formik.errors.frequency && <div>{formik.errors.frequency}</div>}
@@ -151,21 +172,23 @@ const IncomeForm = () => {
                         </>
                     )}
 
-                    <InputLabel htmlFor="user">Usuario Responsable</InputLabel>
+                    <InputLabel htmlFor="responsable">Usuario Responsable</InputLabel>
                     <Select
-                        name="user"
+                        name="responsable"
                         label="Usuario"
                         onChange={formik.handleChange}
-                        value={formik.values.user || ''}
+                        value={formik.values.responsable || ''}
                     >
                         <MenuItem value="" disabled>Selecciona un usuario</MenuItem>
                         {users.map((user) => (
                             <MenuItem key={user.id} value={user.id}>{user.name}</MenuItem>
                         ))}
                     </Select>
-                    {formik.errors.user && <div>{formik.errors.user}</div>}
+                    {formik.errors.responsable && <div>{formik.errors.responsable}</div>}
 
-                    <Button variant="contained" type="submit">{id ? "Editar Ingreso" : "Agregar Ingreso"}</Button>
+                    <Button variant="contained" type="submit">
+                        {id ? "Editar Ingreso" : "Agregar Ingreso"}
+                    </Button>
                 </form>
             </Box>
             <AlertModal
@@ -179,6 +202,6 @@ const IncomeForm = () => {
             />
         </Box>
     );
-}
+};
 
 export default IncomeForm;
