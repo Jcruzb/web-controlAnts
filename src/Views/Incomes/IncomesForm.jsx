@@ -70,7 +70,7 @@ const IncomeForm = () => {
             frequency: Yup.string()
                           .oneOf(FREQUENCY)
                           .required('Se requiere la frecuencia del ingreso'),
-            incomeGroup: Yup.string().oneOf(GROUP),
+            incomeGroup: Yup.string().oneOf(GROUP).required('Se requiere seleccionar el grupo de ingreso'),
             date: Yup.date(),
             limitDate: Yup.date().nullable(),
             responsable: Yup.string().required('Seleccione el responsable del ingreso')
@@ -148,6 +148,19 @@ const IncomeForm = () => {
                     </Select>
                     {formik.errors.frequency && <div>{formik.errors.frequency}</div>}
 
+                    <InputLabel htmlFor="incomeGroup">Grupo de ingreso</InputLabel>
+                    <Select
+                        name="incomeGroup"
+                        label="Grupo de ingreso"
+                        onChange={formik.handleChange}
+                        value={formik.values.incomeGroup || ''}
+                    >
+                        {GROUP.map((group, index) => (
+                            <MenuItem key={index} value={group}>{group}</MenuItem>
+                        ))}
+                    </Select>
+                    {formik.errors.incomeGroup && <div>{formik.errors.incomeGroup}</div>}
+
                     <InputLabel htmlFor="isActive">¿Ingreso Activo?</InputLabel>
                     <Select
                         name="isActive"
@@ -180,8 +193,8 @@ const IncomeForm = () => {
                         value={formik.values.responsable || ''}
                     >
                         <MenuItem value="" disabled>Selecciona un usuario</MenuItem>
-                        {users.map((user) => (
-                            <MenuItem key={user.id} value={user.id}>{user.name}</MenuItem>
+                        {users.map((usr) => (
+                            <MenuItem key={usr.id} value={usr.id}>{usr.name}</MenuItem>
                         ))}
                     </Select>
                     {formik.errors.responsable && <div>{formik.errors.responsable}</div>}
