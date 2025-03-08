@@ -47,7 +47,7 @@ const Program = () => {
         }
     }, [user, date]);
 
-    console.log(program)
+    console.log(program.expenses)
 
     const handleChange = (event, name) => {
         setDate(
