@@ -7,3 +7,4 @@ export const getDebtbyId = (id) => http.get(`/debts/${id}`);
 export const createDebt = (debt) => http.post("/debts/", debt);
 export const deleteDebt = (id) => http.delete(`/debts/${id}`);
 export const updateDebt = (id, debt) => http.put(`/debts/${id}`, debt);
+export const getDebtsByIds = (ids) => http.get(`/debts/by-ids?ids=${ids}`);

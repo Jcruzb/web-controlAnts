@@ -61,7 +61,7 @@ const Income = () => {
         source: item.source,
         amount: item.amount,
         frequency: item.frequency,
-        date: formatDate(item.date)
+        date: item.frequency==='Único' ? formatDate(item.date) : ''
     }));
 
     return (
