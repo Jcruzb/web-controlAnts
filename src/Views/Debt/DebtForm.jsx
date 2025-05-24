@@ -30,7 +30,7 @@ const DebtForm = () => {
             amount: '',
             startDate: '',
             limitDate: '',
-            user: '',
+            debtOwner: '',
             payedUser: '',
         },
         validationSchema: Yup.object({
@@ -41,7 +41,7 @@ const DebtForm = () => {
             amount: Yup.string().required('Se requiere el monto total de la deuda'),
             startDate: Yup.date().required('Se requiere la fecha de adquisición de la deuda'),
             limitDate: Yup.date().required('Se requiere la fecha de finalización del pago'),
-            user: Yup.string().required('Se requiere el usuario de la deuda'),
+            debtOwner: Yup.string().required('Se requiere el usuario de la deuda'),
             payedUser: Yup.string().required('Se requiere el usuario que pagará la deuda'),
         }),
         onSubmit: (values, helpers) => {
@@ -185,13 +185,13 @@ const DebtForm = () => {
                     />
                     <TextField
                         select
-                        id="user"
-                        name="user"
+                        id="debtOwner"
+                        name="debtOwner"
                         label="Usuario responsable"
-                        value={formik.values.user}
+                        value={formik.values.debtOwner}
                         onChange={formik.handleChange}
-                        error={formik.touched.user && Boolean(formik.errors.user)}
-                        helperText={formik.touched.user && formik.errors.user}
+                        error={formik.touched.debtOwner && Boolean(formik.errors.debtOwner)}
+                        helperText={formik.touched.debtOwner && formik.errors.debtOwner}
                     >
                         <MenuItem value="" disabled>Selecciona un usuario</MenuItem>
                         {users.map((user) => (

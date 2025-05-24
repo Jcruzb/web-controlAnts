@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { getProgramByDate } from "../../Services/ProgramService";
+import { getVirtualProgramByDate } from "../../Services/ProgramService";
 import { useAuthContext } from "../../Contexts/AuthContext";
 import { Box, Card, MenuItem, Select, TextField, Typography } from "@mui/material";
 import ProgramTable from "../../Components/ProgramTable/ProgramTable";
@@ -24,6 +24,11 @@ const Program = () => {
 
     const { user } = useAuthContext();
     const [program, setProgram] = useState({
+        month: null,
+        year: null,
+        family: '',
+        expenses: [],
+        debts: [],
         error: false,
     });
     const [date, setDate] = useState({
@@ -34,10 +39,12 @@ const Program = () => {
 
     useEffect(() => {
         if (user.family.id) { // Asegúrate de que el id de la familia existe
+            console.log('Solicitando programa para mes:', date.month, 'año:', date.year);
             setLoading(true);
-            getProgramByDate(user.family.id, date.month, date.year)
-                .then((program) => {
-                    setProgram(program);
+            getVirtualProgramByDate(user.family.id, date.month, date.year)
+                .then((response) => {
+                    console.log(response)
+                    setProgram(response);
                     setLoading(false);
                 })
                 .catch(() => {
@@ -45,9 +52,7 @@ const Program = () => {
                     setLoading(false);
                 })
         }
-    }, [user, date]);
-
-    console.log(program.expenses)
+    }, [user.family.id, date.month, date.year]);
 
     const handleChange = (event, name) => {
         setDate(
@@ -91,9 +96,10 @@ const Program = () => {
             {!program.error ? (
                 <Card sx={{ padding: 2, gap: 2 }}>
                     <Typography variant="h4">Programa de {program.month} de {program.year}</Typography>
-                    <Typography variant="h6">Actividades:</Typography>
+                    <Typography variant="h6">Gastos:</Typography>
                     <ProgramTable rows={program.expenses} />
-
+                    <Typography variant="h6" sx={{ mt: 3 }}>Deudas:</Typography>
+                    <ProgramTable rows={program.debts} />
                 </Card>
             ) : (
                 <Typography variant="h4">No hay programa para el mes seleccionado</Typography>

@@ -55,9 +55,9 @@ if(!rows ){
           {rows?.map((row) => (
             <StyledTableRow key={row.id}>
               <StyledTableCell component="th" scope="row">
-                {row.description}
+                {row.name}
               </StyledTableCell>
-              <StyledTableCell align="right">{row.amount}</StyledTableCell>
+              <StyledTableCell align="right">{row.quote}</StyledTableCell>
                 <StyledTableCell align="right">
                     <button>pagar</button>
                     <button>Eliminar</button>
