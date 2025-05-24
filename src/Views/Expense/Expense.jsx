@@ -39,11 +39,11 @@ const Expense = () => {
 
     const columns = [
         { field: 'name', headerName: 'Nombre', width: 200 },
-        { field: 'description', headerName: 'Descripción', width: 400 },
+        { field: 'description', headerName: 'Descripción', width: 200 },
         { field: 'amount', headerName: 'Monto', width: 100 },
         { field: 'kind', headerName: 'Tipo', width: 100 },
         { field: 'category', headerName: 'Categoría', width: 100 },
-        { field: 'fecha', headerName: 'Fecha', width: 200 },
+        { field: 'fecha', headerName: 'Fecha', width: 100 },
         {
             field: 'acciones',
             headerName: 'Acciones',
@@ -51,7 +51,7 @@ const Expense = () => {
             renderCell: (params) => {
                 return (
                     <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Button href={`/#/expense/edit/${params.row.id}`} variant="contained" color="primary">Editar</Button>
+                        <Button href={`/#/expense/${params.row.id}/edit`} variant="contained" color="primary">Editar</Button>
                         <Button onClick={(e) => handleDelete(e, params)} variant="contained" color="error">Eliminar</Button>
                     </Box>
                 );

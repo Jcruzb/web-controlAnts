@@ -41,7 +41,7 @@ function App() {
         <Route path="/expenses" element={<Expense />} />
         <Route path="/expenses/add" element={<ExpenseForm />} />
         <Route path="/expenses/:id" element={<h1>Gasto</h1>} />
-        <Route path="/expenses/:id/edit" element={<h1>Editar Gasto</h1>} />
+        <Route path="/expense/:id/edit" element={<ExpenseForm/>} />
         {/* Debts */}
         <Route path="/debts" element={<Debt />} />
         <Route path="/debt/add" element={<DebtForm />} />

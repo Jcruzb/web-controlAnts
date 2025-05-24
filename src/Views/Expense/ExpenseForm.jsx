@@ -1,16 +1,17 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { createExpense } from "../../Services/ExpenseService";
+import { createExpense, getExpenseById, updateExpense } from "../../Services/ExpenseService";
 import { Box, Button, TextField, Typography, MenuItem, Select, Card, FormControl, InputLabel } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getCategoriesList } from "../../Services/CategoryService";
 import AlertModal from "../../Components/Modal/AlertModal";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 const Expense = () => {
     const [categories, setCategories] = useState([]);
     const KIND = ['fijo', 'variable', 'extra'];
     const navigate = useNavigate();
+    const { id } = useParams();
 
     useEffect(() => {
         getCategoriesList()
@@ -70,7 +71,9 @@ const Expense = () => {
                 realPayer: values.realPayer || undefined
             };
 
-            createExpense(payload)
+            const action = id ? updateExpense(id, payload) : createExpense(payload);
+
+            action
                 .then((response) => {
                     console.log(response);
                     helpers.resetForm();
@@ -86,6 +89,23 @@ const Expense = () => {
         status: { success: false }
     });
 
+    useEffect(() => {
+        if (id) {
+            getExpenseById(id)
+                .then((response) => {
+                    formik.setValues({
+                        ...response,
+                        startDate: response.startDate || '',
+                        date: response.date || '',
+                        category: response.category?.id || '',
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+    }, [id]);
+
     const handleSelectChange = (event, name) => {
         const value = event.target.value;
         formik.setFieldValue(name, value);
@@ -94,7 +114,7 @@ const Expense = () => {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 2 }}>
             <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
-                <Typography variant="h4">Agregar Gasto</Typography>
+                <Typography variant="h4">{id ? "Editar Gasto" : "Agregar Gasto"}</Typography>
             </Box>
             <Card sx={{ width: '100%', maxWidth: 600, padding: 2, marginTop: 2 }}>
                 <form onSubmit={formik.handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -212,7 +232,7 @@ const Expense = () => {
                     {formik.errors.description && <div>{formik.errors.description}</div>}
 
                     <Button type="submit" variant="contained" disabled={formik.isSubmitting}>
-                        Agregar
+                        {id ? "Editar" : "Agregar"}
                     </Button>
                 </form>
             </Card>
@@ -222,8 +242,8 @@ const Expense = () => {
                     formik.setStatus({ success: false });
                     navigate("/expenses");
                 }}
-                modalTitle="Éxito"
-                modalBody="El gasto se creó correctamente"
+                modalTitle={id ? "Gasto Editado" : "¡Gasto Creado!"}
+                modalBody={id ? "Gasto editado exitosamente" : "Gasto creado exitosamente"}
             />
         </Box>
     );
