@@ -4,6 +4,7 @@ import { getVirtualProgramByDate } from "../../Services/ProgramService";
 import { useAuthContext } from "../../Contexts/AuthContext";
 import { Box, Card, MenuItem, Select, TextField, Typography } from "@mui/material";
 import ProgramTable from "../../Components/ProgramTable/ProgramTable";
+import ProgramExpenseTable from "../../Components/ProgramTable/ProgramExpenseTable";
 
 const months = [
     { value: 1, label: 'Enero' },
@@ -97,7 +98,7 @@ const Program = () => {
                 <Card sx={{ padding: 2, gap: 2 }}>
                     <Typography variant="h4">Programa de {program.month} de {program.year}</Typography>
                     <Typography variant="h6">Gastos:</Typography>
-                    <ProgramTable rows={program.expenses} />
+                    <ProgramExpenseTable rows={program.expenses} />
                     <Typography variant="h6" sx={{ mt: 3 }}>Deudas:</Typography>
                     <ProgramTable rows={program.debts} />
                 </Card>
