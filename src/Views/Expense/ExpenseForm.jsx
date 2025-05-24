@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { createExpense } from "../../Services/ExpenseService";
-import { Box, Button, Divider, TextField, Typography, MenuItem, Select } from "@mui/material";
+import { Box, Button, TextField, Typography, MenuItem, Select, Card, FormControl, InputLabel } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getCategoriesList } from "../../Services/CategoryService";
 import AlertModal from "../../Components/Modal/AlertModal";
@@ -70,12 +70,11 @@ const Expense = () => {
     };
 
     return (
-        <Box>
-            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 2, marginTop: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 2 }}>
+            <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
                 <Typography variant="h4">Agregar Gasto</Typography>
             </Box>
-            <Divider sx={{ marginTop: 3 }} />
-            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 2, marginTop: 2 }}>
+            <Card sx={{ width: '100%', maxWidth: 600, padding: 2, marginTop: 2 }}>
                 <form onSubmit={formik.handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                     <TextField
                         id="name"
@@ -99,19 +98,22 @@ const Expense = () => {
                     />
                     {formik.errors.amount && <div>{formik.errors.amount}</div>}
                     
-                    <Select
-                        id="kind"
-                        name="kind"
-                        label="Tipo"
-                        variant="outlined"
-                        onChange={(e) => handleSelectChange(e, "kind")}
-                        value={formik.values.kind}
-                    >
-                        <MenuItem value="" disabled>Selecciona un tipo</MenuItem>
-                        {KIND.map((kind) => (
-                            <MenuItem key={kind} value={kind}>{kind}</MenuItem>
-                        ))}
-                    </Select>
+                    <FormControl fullWidth>
+                        <InputLabel id="kind-label">Tipo</InputLabel>
+                        <Select
+                            id="kind"
+                            name="kind"
+                            labelId="kind-label"
+                            label="Tipo"
+                            value={formik.values.kind}
+                            onChange={(e) => handleSelectChange(e, "kind")}
+                        >
+                            <MenuItem value="" disabled>Selecciona un tipo</MenuItem>
+                            {KIND.map((kind) => (
+                                <MenuItem key={kind} value={kind}>{kind}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     {formik.errors.kind && <div>{formik.errors.kind}</div>}
                     
                     <TextField
@@ -121,36 +123,43 @@ const Expense = () => {
                         name="date"
                         onChange={formik.handleChange}
                         value={formik.values.date}
+                        InputLabelProps={{ shrink: true }}
                     />
                     {formik.errors.date && <div>{formik.errors.date}</div>}
                     
-                    <Select
-                        id="category"
-                        name="category"
-                        label="Categoría"
-                        variant="outlined"
-                        onChange={(e) => handleSelectChange(e, "category")}
-                        value={formik.values.category}
-                    >
-                        <MenuItem value="" disabled>Selecciona una categoría</MenuItem>
-                        {categories.map((category) => (
-                            <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>
-                        ))}
-                    </Select>
+                    <FormControl fullWidth>
+                        <InputLabel id="category-label">Categoría</InputLabel>
+                        <Select
+                            id="category"
+                            name="category"
+                            labelId="category-label"
+                            label="Categoría"
+                            value={formik.values.category}
+                            onChange={(e) => handleSelectChange(e, "category")}
+                        >
+                            <MenuItem value="" disabled>Selecciona una categoría</MenuItem>
+                            {categories.map((category) => (
+                                <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     {formik.errors.category && <div>{formik.errors.category}</div>}
                     
-                    <Select
-                        id="expenseGroup"
-                        name="expenseGroup"
-                        label="Grupo de gastos"
-                        variant="outlined"
-                        onChange={(e) => handleSelectChange(e, "expenseGroup")}
-                        value={formik.values.expenseGroup}
-                    >
-                        <MenuItem value="" disabled>Selecciona un grupo</MenuItem>
-                        <MenuItem value="familiar">Familiar</MenuItem>
-                        <MenuItem value="personal">Personal</MenuItem>
-                    </Select>
+                    <FormControl fullWidth>
+                        <InputLabel id="expenseGroup-label">Grupo de gastos</InputLabel>
+                        <Select
+                            id="expenseGroup"
+                            name="expenseGroup"
+                            labelId="expenseGroup-label"
+                            label="Grupo de gastos"
+                            value={formik.values.expenseGroup}
+                            onChange={(e) => handleSelectChange(e, "expenseGroup")}
+                        >
+                            <MenuItem value="" disabled>Selecciona un grupo</MenuItem>
+                            <MenuItem value="familiar">Familiar</MenuItem>
+                            <MenuItem value="personal">Personal</MenuItem>
+                        </Select>
+                    </FormControl>
                     {formik.errors.expenseGroup && <div>{formik.errors.expenseGroup}</div>}
                     
                     <TextField
@@ -169,7 +178,7 @@ const Expense = () => {
                         Agregar
                     </Button>
                 </form>
-            </Box>
+            </Card>
             <AlertModal
                 open={formik.status?.success}
                 onClose={() => {

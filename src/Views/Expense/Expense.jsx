@@ -56,8 +56,9 @@ const Expense = () => {
 
     if (expenses.length === 0) {
         return (
-            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+            <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100vh", gap: 2 }}>
                 <Typography variant="h4">No hay gastos registrados</Typography>
+                <Button href="/#/expenses/add" variant="contained" color="primary">Agregar</Button>
             </Box>
         );
     }
