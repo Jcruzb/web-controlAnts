@@ -45,6 +45,8 @@ const DebtForm = () => {
             payedUser: Yup.string().required('Se requiere el usuario que pagará la deuda'),
         }),
         onSubmit: (values, helpers) => {
+            values.quote = parseFloat(values.quote.replace(',', '.'));
+            values.amount = parseFloat(values.amount.replace(',', '.'));
             createDebt(values)
                 .then((response) => {
                     console.log(response);
