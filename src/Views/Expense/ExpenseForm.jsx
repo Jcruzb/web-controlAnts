@@ -11,7 +11,7 @@ const Expense = () => {
     const [categories, setCategories] = useState([]);
     const KIND = ['fijo', 'variable', 'extra'];
     const navigate = useNavigate();
-    
+
     useEffect(() => {
         getCategoriesList()
             .then((response) => {
@@ -29,26 +29,48 @@ const Expense = () => {
             expenseGroup: '',
             kind: '',
             date: '',
+            startDate: '',
+            plannedPayer: '',
+            realPayer: '',
             category: '',
             description: ''  // nuevo campo para la descripción
         },
         validationSchema: Yup.object({
             name: Yup.string()
-                     .min(2, 'El nombre es muy corto')
-                     .max(50, 'El nombre es muy largo')
-                     .required('Se requiere el nombre del gasto'),
+                .min(2, 'El nombre es muy corto')
+                .max(50, 'El nombre es muy largo')
+                .required('Se requiere el nombre del gasto'),
             amount: Yup.number().required('Se requiere el monto del gasto'),
             kind: Yup.string()
-                     .min(2, 'El tipo es muy corto')
-                     .max(50, 'El tipo es muy largo')
-                     .required('Se requiere el tipo del gasto'),
-            date: Yup.date().required('Se requiere la fecha del gasto'),
+                .min(2, 'El tipo es muy corto')
+                .max(50, 'El tipo es muy largo')
+                .required('Se requiere el tipo del gasto'),
+            startDate: Yup.date().when('kind', {
+                is: 'fijo',
+                then: schema => schema.required('Se requiere la fecha de inicio'),
+                otherwise: schema => schema.notRequired()
+            }),
+            date: Yup.date().when('kind', {
+                is: 'variable',
+                then: schema => schema.required('Se requiere la fecha del gasto'),
+                otherwise: schema => schema.notRequired()
+            }),
             category: Yup.string().required('Se requiere la categoría del gasto'),
             expenseGroup: Yup.string().required('Se requiere indicar si el gasto es personal o familiar'),
             description: Yup.string()  // este campo es opcional, pero puede validarse según lo necesites
         }),
         onSubmit: (values, helpers) => {
-            createExpense(values)
+            console.log('submit OK', values);
+            console.log('entrando al submit', values);
+            const payload = {
+                ...values,
+                startDate: values.kind === 'fijo' ? values.startDate : undefined,
+                date: values.kind === 'variable' ? values.date : undefined,
+                plannedPayer: values.plannedPayer || undefined,
+                realPayer: values.realPayer || undefined
+            };
+
+            createExpense(payload)
                 .then((response) => {
                     console.log(response);
                     helpers.resetForm();
@@ -86,7 +108,7 @@ const Expense = () => {
                         value={formik.values.name}
                     />
                     {formik.errors.name && <div>{formik.errors.name}</div>}
-                    
+
                     <TextField
                         id="amount"
                         label="Monto"
@@ -97,7 +119,7 @@ const Expense = () => {
                         value={formik.values.amount}
                     />
                     {formik.errors.amount && <div>{formik.errors.amount}</div>}
-                    
+
                     <FormControl fullWidth>
                         <InputLabel id="kind-label">Tipo</InputLabel>
                         <Select
@@ -115,18 +137,33 @@ const Expense = () => {
                         </Select>
                     </FormControl>
                     {formik.errors.kind && <div>{formik.errors.kind}</div>}
-                    
-                    <TextField
-                        id="date"
-                        variant="outlined"
-                        type="date"
-                        name="date"
-                        onChange={formik.handleChange}
-                        value={formik.values.date}
-                        InputLabelProps={{ shrink: true }}
-                    />
+
+                    {formik.values.kind === 'fijo' && (
+                        <TextField
+                            id="startDate"
+                            label="Fecha de inicio"
+                            variant="outlined"
+                            type="date"
+                            name="startDate"
+                            onChange={formik.handleChange}
+                            value={formik.values.startDate}
+                            InputLabelProps={{ shrink: true }}
+                        />
+                    )}
+                    {formik.values.kind === 'variable' && (
+                        <TextField
+                            id="date"
+                            label="Fecha planeada"
+                            variant="outlined"
+                            type="date"
+                            name="date"
+                            onChange={formik.handleChange}
+                            value={formik.values.date}
+                            InputLabelProps={{ shrink: true }}
+                        />
+                    )}
                     {formik.errors.date && <div>{formik.errors.date}</div>}
-                    
+
                     <FormControl fullWidth>
                         <InputLabel id="category-label">Categoría</InputLabel>
                         <Select
@@ -144,7 +181,7 @@ const Expense = () => {
                         </Select>
                     </FormControl>
                     {formik.errors.category && <div>{formik.errors.category}</div>}
-                    
+
                     <FormControl fullWidth>
                         <InputLabel id="expenseGroup-label">Grupo de gastos</InputLabel>
                         <Select
@@ -161,7 +198,7 @@ const Expense = () => {
                         </Select>
                     </FormControl>
                     {formik.errors.expenseGroup && <div>{formik.errors.expenseGroup}</div>}
-                    
+
                     <TextField
                         id="description"
                         label="Descripción"
@@ -173,7 +210,7 @@ const Expense = () => {
                         rows={4}
                     />
                     {formik.errors.description && <div>{formik.errors.description}</div>}
-                    
+
                     <Button type="submit" variant="contained" disabled={formik.isSubmitting}>
                         Agregar
                     </Button>

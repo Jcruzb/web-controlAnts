@@ -11,6 +11,7 @@ const Expense = () => {
     useEffect(() => {
         getExpensesList()
             .then((response) => {
+                console.log(response)
                 setExpenses(response);
             })
             .catch((error) => {
@@ -31,22 +32,26 @@ const Expense = () => {
     };
 
     const DateFormat = (date) => {
+        if (!date) return '';
         const newDate = new Date(date);
         return newDate.toLocaleDateString();
     };
 
     const columns = [
-        { field: 'name', headerName: 'Nombre', width: 200 }, // Nueva columna para el nombre
+        { field: 'name', headerName: 'Nombre', width: 200 },
         { field: 'description', headerName: 'Descripción', width: 400 },
         { field: 'amount', headerName: 'Monto', width: 100 },
         { field: 'kind', headerName: 'Tipo', width: 100 },
         { field: 'category', headerName: 'Categoría', width: 100 },
-        { field: 'date', headerName: 'Fecha', width: 200 },
+        { field: 'fecha', headerName: 'Fecha', width: 200 },
         {
-            field: 'id', headerName: 'Acciones', width: 200, renderCell: (params) => {
+            field: 'acciones',
+            headerName: 'Acciones',
+            width: 200,
+            renderCell: (params) => {
                 return (
                     <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Button href={`/expense/edit/${params.value}`} variant="contained" color="primary">Editar</Button>
+                        <Button href={`/#/expense/edit/${params.row.id}`} variant="contained" color="primary">Editar</Button>
                         <Button onClick={(e) => handleDelete(e, params)} variant="contained" color="error">Eliminar</Button>
                     </Box>
                 );
@@ -69,8 +74,10 @@ const Expense = () => {
         description: expense.description,
         amount: expense.amount,
         kind: expense.kind,
-        category: expense?.category?.name,
-        date: DateFormat(expense.date),
+        category: expense?.category?.name || '',
+        fecha: DateFormat(
+            expense.kind === 'fijo' ? expense.startDate : expense.date
+        ),
     }));
 
     return (
