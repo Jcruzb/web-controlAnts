@@ -36,7 +36,7 @@ function App() {
         <Route path="/categorys" element={<Category />} />
         <Route path="/category/add" element={<CategoryForm />} />
         <Route path="/categorys/:id" element={<h1>Categoria</h1>} />
-        <Route path="/categorys/:id/edit" element={<h1>Editar Categoria</h1>} />
+        <Route path="/category/:id/edit" element={<CategoryForm/>} />
         {/* Expenses */}
         <Route path="/expenses" element={<Expense />} />
         <Route path="/expenses/add" element={<ExpenseForm />} />

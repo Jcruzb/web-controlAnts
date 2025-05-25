@@ -1,13 +1,16 @@
-import { Box, Button, Divider, TextField, Typography } from "@mui/material";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Box, Button, Card, Divider, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { createCategory } from "../../Services/CategoryService";
+import { createCategory, getCategoryById, updateCategory } from "../../Services/CategoryService";
 import AlertModal from "../../Components/Modal/AlertModal";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { useEffect } from "react";
 
 const CategoryForm = () => {
 
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const formik = useFormik({
     initialValues: {
@@ -19,7 +22,9 @@ const CategoryForm = () => {
       description: Yup.string().min(2).max(50).required('Se requiere la descripcion de la categoria'),
     }),
     onSubmit: (values, helpers) => {
-      createCategory(values)
+      const action = id ? updateCategory(id, values) : createCategory(values);
+
+      action
         .then((response) => {
           console.log(response);
           helpers.resetForm();
@@ -32,39 +37,56 @@ const CategoryForm = () => {
           helpers.setSubmitting(false);
         });
     },
-    status: { success: false } 
+    status: { success: false }
   });
-  
+
+  useEffect(() => {
+    if (id) {
+      getCategoryById(id)
+        .then((response) => {
+          formik.setValues({
+            name: response.name || '',
+            description: response.description || ''
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [id]);
+
   return (
     <Box>
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: 'center', gap: 2, marginTop: 2 }}>
-        <Typography variant="h4">Agregar Categoria</Typography>
+        <Typography variant="h4">{id ? "Editar Categoría" : "Agregar Categoría"}</Typography>
       </Box>
-      <Divider sx={{marginTop:3}} />
+      <Divider sx={{ marginTop: 3 }} />
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: 'center', gap: 2, marginTop: 2 }}>
-        <form onSubmit={formik.handleSubmit} style={{display:'flex', flexDirection:'column', gap:10}}>
-          <TextField
-            id="name"
-            label="Nombre"
-            variant="outlined"
-            type="text"
-            name="name"
-            onChange={formik.handleChange}
-            value={formik.values.name}
-          />
-          {formik.errors.name ? <div>{formik.errors.name}</div> : null}
-          <TextField
-            id="description"
-            label="Descripcion"
-            variant="outlined"
-            type="text"
-            name="description"
-            onChange={formik.handleChange}
-            value={formik.values.description}
-          />
-          {formik.errors.description ? <div>{formik.errors.description}</div> : null}
-          <Button variant="contained" type="submit">Agregar</Button>
-        </form>
+        <Card sx={{ padding: 2, width: '50%' }}>
+          <form onSubmit={formik.handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <TextField
+              id="name"
+              label="Nombre"
+              variant="outlined"
+              type="text"
+              name="name"
+              onChange={formik.handleChange}
+              value={formik.values.name}
+            />
+            {formik.errors.name ? <div>{formik.errors.name}</div> : null}
+            <TextField
+              id="description"
+              label="Descripcion"
+              variant="outlined"
+              type="text"
+              name="description"
+              onChange={formik.handleChange}
+              value={formik.values.description}
+            />
+            {formik.errors.description ? <div>{formik.errors.description}</div> : null}
+            <Button variant="contained" type="submit">{id ? "Editar" : "Agregar"}</Button>
+          </form>
+        </Card>
       </Box>
       <AlertModal
         open={formik.status?.success}
@@ -72,8 +94,8 @@ const CategoryForm = () => {
           formik.setStatus({ success: false })
           navigate('/categorys')
         }}
-        modalTitle="Success"
-        modalBody="Category created successfully"
+        modalTitle={id ? "Categoría Editada" : "¡Categoría Creada!"}
+        modalBody={id ? "Categoría editada exitosamente" : "Categoría creada exitosamente"}
       />
     </Box>
   );
